@@ -41,3 +41,11 @@ init  {
 	    i++
   od
 }
+
+
+ltl forksAreNotShared{ [] (
+  forkUserCount[0] <= 1 &&
+  forkUserCount[1] <= 1 &&
+  forkUserCount[2] <= 1 &&
+  forkUserCount[3] <= 1 
+)};
