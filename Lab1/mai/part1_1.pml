@@ -1,6 +1,8 @@
 #define N 4
 bool isForkUsed[N]; 
 
+int critical = 0;
+
 proctype phil(int id) {
   printf("running\n");
   int firstForkIndex = id;
@@ -9,13 +11,19 @@ proctype phil(int id) {
     :: printf("Philosopher %d is thinking\n", id);
       atomic {
         !isForkUsed[firstForkIndex] && !isForkUsed[secondForkIndex];
+        critical++; 
         isForkUsed[firstForkIndex] = true;
         isForkUsed[secondForkIndex] = true;
         printf("Philosopher %d is eating with forks %d and %d\n", id, firstForkIndex, secondForkIndex);
         isForkUsed[firstForkIndex] = false;
         isForkUsed[secondForkIndex] = false;
+        critical--;
       }
  od
+}
+
+active proctype verifier() {
+  assert(critical <= 1);
 }
 
 init  {
