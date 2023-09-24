@@ -3,7 +3,7 @@ mtype = {ok, err, msg1, msg2, msg3, keyA, keyB, agentA, agentB,
 
 typedef Crypt { mtype key, content1, content2 };
 
-chan network = [0] of {mtype, /* msg# */
+chan network = [0] of {mtype, /* msg type */
 		       mtype, /* receiver */
 		       Crypt
 };
@@ -71,5 +71,38 @@ active proctype Alice() {
 }
 
 active proctype Bob() {
-   printf("placeholder for Bob\n")
+   /* local variables */
+
+  mtype pkey;      /* the other agent's public key                 */
+  mtype ownNonce;      /* our nonce */
+  Crypt messageBA; /* our encrypted message to the other party     */
+  Crypt data;      /* received encrypted message                   */
+
+
+  /* Initialization  */
+
+  partnerB = agentA;
+  pkey     = keyA;
+  ownNonce = nonceB;
+
+  /* Receive message from other party, pattern-matching on partnerA */
+
+  network ? msg1 (partnerA, data);
+
+  /* Check if the data we received follows 1) */
+  (data.key == keyB)
+
+   /* If so, we send a message following 2) */
+   messageBA.key = pkey;
+   messageBA.content1 = data.content2;
+   messageBA.content2 = ownNonce;
+
+   network ! msg2 (agentA, messageBA);
+
+  /* Now, we wait for Alice to verify and reply */
+
+  network ? msg3 (agentB, data);
+
+  /* and last - update the auxilary status variable */
+  statusB = ok;
 }
