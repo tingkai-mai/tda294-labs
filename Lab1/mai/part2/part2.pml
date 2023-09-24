@@ -106,3 +106,5 @@ active proctype Bob() {
   /* and last - update the auxilary status variable */
   statusB = ok;
 }
+
+ltl task2 {<> (statusA == statusB && statusA == ok && statusB == ok) }
