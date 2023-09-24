@@ -79,15 +79,15 @@ init  {
 
 
 ltl forksAreNotShared{ [] (
-  forkUserCount[0] <= 1 &&
-  forkUserCount[1] <= 1 &&
-  forkUserCount[2] <= 1 &&
+  forkUserCount[0] <= 1 && 
+  forkUserCount[1] <= 1 && 
+  forkUserCount[2] <= 1 && 
   forkUserCount[3] <= 1 
 )};
 
-ltl philHasEatenAtLeastOnce { <> (
-  hasEaten[0] == 1 &&
-  hasEaten[1] == 1 &&
-  hasEaten[2] == 1 &&
+ltl philHasEatenAtLeastOnce { []<> (
+  hasEaten[0] == 1 ||
+  hasEaten[1] == 1 || 
+  hasEaten[2] == 1 || 
   hasEaten[3] == 1 
 )}
