@@ -1,5 +1,5 @@
 #!/bin/bash
 
-spin -a Philosophers.pml
+spin -a NS2.pml
 gcc -o pan pan.c
 ./pan -a -N forksAreNotShared 
