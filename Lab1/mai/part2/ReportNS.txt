@@ -1,3 +1,0 @@
-I used acceptance mode in SPIN to verify my answer, as we expect that eventually, statusA and statusB will be both ok. This is because this is an example of a liveliness property, and we eventually expect that both statusA and statusB will be ok if Alice communicates successfully with Bob.
-
-"How would weak fairness affect the answer?" idk
