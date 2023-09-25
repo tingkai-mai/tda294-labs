@@ -2,4 +2,5 @@
 
 spin -a Philosophers.pml
 gcc -o pan pan.c
-./pan -a -N forksAreNotShared 
+./pan -a -f -N philHasEatenAtLeastOnce
+# ./pan -a -N forksAreNotShared 
