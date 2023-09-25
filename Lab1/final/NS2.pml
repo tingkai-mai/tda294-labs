@@ -1,5 +1,5 @@
 mtype = {ok, err, msg1, msg2, msg3, keyA, keyB, agentA, agentB,
-     nonceA, nonceB, agentI, keyI, nonceI };
+     nonceA, nonceB };
 
 typedef Crypt { mtype key, content1, content2 };
 
@@ -12,7 +12,6 @@ chan network = [0] of {mtype, /* msg# */
 mtype partnerA, partnerB;
 mtype statusA = err;
 mtype statusB = err;
-bool knows_nonceA, knows_nonceB = false;
 
 /* Agent (A)lice */
 active proctype Alice() {
@@ -25,11 +24,9 @@ active proctype Alice() {
 
 
   /* Initialization  */
-    
-  if
-    :: partnerA = agentB; pkey = keyB;
-    :: partnerA = agentI; pkey = keyI;
-  fi
+
+  partnerA = agentB;
+  pkey     = keyB;
 
   /* Prepare the first message */
 
@@ -119,88 +116,4 @@ active proctype Bob() {
 
 }
 
-active proctype Intruder() {
-  mtype msg, recpt;
-  Crypt data, intercepted;
-  do
-    :: network ? (msg, _, data) ->
-       if /* perhaps store the message */
-     :: intercepted.key   = data.key;
-	    intercepted.content1 = data.content1;
-	    intercepted.content2 = data.content2;
-        if
-          :: (intercepted.key == keyI) ->
-            if
-                // Assume that Intruder can decipher the user from the nonce
-                // If this assumption is wrong, assume that the Intruder knows
-                // the message type (msg1, msg2, msg3). This determines the structure
-                // of the Crypt (e.g. in msg2: content1 = Nx, content2 = Ny
-                // or in msg1: content2 = Ny)
-              :: (intercepted.content1 == nonceA || intercepted.content2 == nonceA) -> knows_nonceA = true;
-              :: (intercepted.content1 == nonceB || intercepted.content2 == nonceB) -> knows_nonceB = true;
-            fi ;
-          :: skip;
-        fi ;
-	 :: skip;
-       fi ;
-
-    :: /* Replay or send a message */
-       if /* choose message type */
-	 :: msg = msg1;
-	 :: msg = msg2;
-	 :: msg = msg3;
-       fi ;
-       if /* choose a recepient */
-	 :: recpt = agentA;
-	 :: recpt = agentB;
-       fi ;
-       if /* replay intercepted message or assemble it */
-	 :: data.key    = intercepted.key;
-	    data.content1  = intercepted.content1;
-	    data.content2  = intercepted.content2;
-
-	 :: if /* assemble content1 */
-          :: (msg == msg1) -> data.content1 = agentA;
-            
-          :: (msg == msg2) ->
-            if
-              :: knows_nonceA -> data.content1 = nonceA;
-            fi ;
-
-          :: (msg == msg3) ->
-            if
-              :: knows_nonceB -> data.content1 = nonceB;
-            fi ;
-        fi ;
-
-	    if /* assemble key */
-	      :: data.key = keyA;
-	      :: data.key = keyB;
-	      :: data.key = keyI;
-	    fi ;
-
-        if /* assemble content2 */
-          :: (msg == msg1) -> 
-            if 
-              :: knows_nonceA -> data.content2 = nonceA;
-              :: data.content2 = nonceI;
-            fi ;
-
-          :: (msg == msg2) ->
-            if
-              :: knows_nonceB -> data.content2 = nonceB;
-              :: data.content2 = nonceI;
-            fi ;
-
-          :: (msg == msg3) -> data.content2 = 0;
-	    fi ;
-       fi ;
-      network ! msg (recpt, data);
-  od
-}
-
 ltl task2 { <> (statusA == ok && statusB == ok) };
-ltl propAB { [] ((statusA == ok && statusB == ok) -> 
-    (partnerA == agentB && partnerB == agentA)) };
-ltl propA { [] ((statusA == ok && partnerA == agentB) -> !knows_nonceA) };
-ltl propB { [] ((statusB == ok && partnerB == agentA) -> !knows_nonceB) };

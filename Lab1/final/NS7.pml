@@ -1,10 +1,10 @@
 mtype = {ok, err, msg1, msg2, msg3, keyA, keyB, agentA, agentB,
      nonceA, nonceB, agentI, keyI, nonceI };
 
-typedef Crypt { mtype key, content1, content2 };
+typedef Crypt { mtype key, content0, content1, content2 };
 
 chan network = [0] of {mtype, /* msg# */
-		       mtype, /* receiver */
+    	       mtype, /* receiver */
 		       Crypt
 };
 
@@ -100,6 +100,7 @@ active proctype Bob() {
   
   /* Prepare next message */
   messageBA.key = pkey;
+  messageBA.content0 = agentB;
   messageBA.content1 = pnonce;
   messageBA.content2 = nonceB;
   
@@ -126,16 +127,12 @@ active proctype Intruder() {
     :: network ? (msg, _, data) ->
        if /* perhaps store the message */
      :: intercepted.key   = data.key;
+        intercepted.content0 = data.content0;
 	    intercepted.content1 = data.content1;
 	    intercepted.content2 = data.content2;
         if
           :: (intercepted.key == keyI) ->
             if
-                // Assume that Intruder can decipher the user from the nonce
-                // If this assumption is wrong, assume that the Intruder knows
-                // the message type (msg1, msg2, msg3). This determines the structure
-                // of the Crypt (e.g. in msg2: content1 = Nx, content2 = Ny
-                // or in msg1: content2 = Ny)
               :: (intercepted.content1 == nonceA || intercepted.content2 == nonceA) -> knows_nonceA = true;
               :: (intercepted.content1 == nonceB || intercepted.content2 == nonceB) -> knows_nonceB = true;
             fi ;
@@ -150,16 +147,27 @@ active proctype Intruder() {
 	 :: msg = msg2;
 	 :: msg = msg3;
        fi ;
+
        if /* choose a recepient */
 	 :: recpt = agentA;
 	 :: recpt = agentB;
        fi ;
+
        if /* replay intercepted message or assemble it */
 	 :: data.key    = intercepted.key;
+        data.content0  = intercepted.content0;
 	    data.content1  = intercepted.content1;
 	    data.content2  = intercepted.content2;
 
-	 :: if /* assemble content1 */
+     :: if /* assemble content0 */
+          :: msg == msg2 -> 
+          if 
+            :: data.content0 = agentI;
+            :: data.content0 = agentB;
+          fi ;
+        fi ;
+
+	    if /* assemble content1 */
           :: (msg == msg1) -> data.content1 = agentA;
             
           :: (msg == msg2) ->
@@ -169,6 +177,7 @@ active proctype Intruder() {
 
           :: (msg == msg3) ->
             if
+              :: knows_nonceA -> data.content1 = nonceA;
               :: knows_nonceB -> data.content1 = nonceB;
             fi ;
         fi ;
