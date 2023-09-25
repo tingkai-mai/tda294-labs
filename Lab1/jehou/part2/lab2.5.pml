@@ -153,18 +153,19 @@ active proctype Intruder() {
 	 :: data.key    = intercepted.key;
 	    data.content1  = intercepted.content1;
 	    data.content2  = intercepted.content2;
+
 	 :: if /* assemble content1 */
-          :: msg == msg3 ->
+          :: (msg == msg1) -> data.content1 = agentA;
+            
+          :: (msg == msg2) ->
+            if
+              :: knows_nonceA -> data.content1 = nonceA;
+            fi ;
+
+          :: (msg == msg3) ->
             if
               :: knows_nonceA -> data.content1 = nonceA;
               :: knows_nonceB -> data.content1 = nonceB;
-              :: else -> data.content1 = nonceI;
-            fi ;
-          :: else ->
-            if
-              :: data.content1 = agentA;
-              :: data.content1 = agentB;
-              :: data.content1 = agentI;
             fi ;
         fi ;
 
@@ -173,14 +174,21 @@ active proctype Intruder() {
 	      :: data.key = keyB;
 	      :: data.key = keyI;
 	    fi ;
-        if
-          :: (msg == msg3) -> data.content2 = 0;
-          :: else ->
-            if
+
+        if /* assemble content2 */
+          :: (msg == msg1) -> 
+            if 
               :: knows_nonceA -> data.content2 = nonceA;
+              :: data.content2 = nonceI;
+            fi ;
+
+          :: (msg == msg2) ->
+            if
               :: knows_nonceB -> data.content2 = nonceB;
               :: data.content2 = nonceI;
             fi ;
+
+          :: (msg == msg3) -> data.content2 = 0;
 	    fi ;
        fi ;
       network ! msg (recpt, data);
