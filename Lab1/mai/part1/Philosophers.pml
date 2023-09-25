@@ -1,5 +1,6 @@
 #define N 4
 #define EMPTY_USER 100
+
 int forkUserCount[N]; 
 int forkCurrentUser[N]; 
 int hasEaten[N];
@@ -53,10 +54,12 @@ proctype phil(int id) {
 }
 
 active proctype verifier() {
-  int i = 0;
-  for (i : 0 .. N-1) {
-    assert(forkUserCount[i] <= 1);
-  }
+  int i;
+  do
+    :: for (i : 0 .. N-1) {
+        assert(forkUserCount[i] <= 1);
+      }
+  od
 }
 
 init  {
@@ -86,8 +89,8 @@ ltl forksAreNotShared{ [] (
 )};
 
 ltl philHasEatenAtLeastOnce { []<> (
-  hasEaten[0] == 1 ||
-  hasEaten[1] == 1 || 
-  hasEaten[2] == 1 || 
+  hasEaten[0] == 1 && 
+  hasEaten[1] == 1 &&
+  hasEaten[2] == 1 && 
   hasEaten[3] == 1 
 )}
