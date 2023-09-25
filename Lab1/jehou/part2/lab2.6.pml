@@ -196,3 +196,7 @@ active proctype Intruder() {
 }
 
 ltl task2 { <> (statusA == ok && statusB == ok) };
+ltl propAB { [] ((statusA == ok && statusB == ok) -> 
+    (partnerA == agentB && partnerB == agentA)) };
+ltl propA { [] ((statusA == ok && partnerA == agentB) -> !knows_nonceA) };
+ltl propB { [] ((statusB == ok && partnerB == agentA) -> !knows_nonceB) };

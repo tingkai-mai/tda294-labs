@@ -1,0 +1,23 @@
+2a.
+We used the acceptance mode to verify the formula as it is a never claim whereby we are checking for something good to happen eventually. Hence, Spin will search for accepting cycles through this claim.
+
+2b.
+Using weak fairness does not affect our answer as we are using a rendezvous channel, causing our message passing to be synchronous and ensuring that neither processes will be starved.
+
+3c.
+The intruder intercepts the first message (msg1) that Alice sends to Bob, hence Bob will continue to wait for msg1 while Alice waits to receive msg2 from Bob. Thus both Alice and Bob are starved and they never reach status = ok.
+
+6a.
+Here we used the safety mode as we are verifying a safety property which is something "good" that is gauranteed throughout each run. Hence, Spin checks if there are any runs that violate this property.
+
+6b.
+(Why is weak fairness not required for "Safety" mode?)
+
+6c.
+The formulas propAB and propB are both violated in this model.
+For propAB, partnerA is made the intruder (agentI). The intruder then intercepts all of the messages from Alice to Bob, acting as a "man in the middle", reading nonceA and nonceB before relaying the message over to Bob. Hence, while Alice and Bob are allows to complete (i.e. status = ok), the nonces of both are known to the intruder.
+
+For propB, partnerA is made the intruder (agentI). Similar to propAB, agentI is able to intercept the messages from Alice to Bob and read nonceB. As partnerB is always set as agentA and Bob is allowed to complete, the safety property is thus violated.
+
+7.
+how tf does this work
