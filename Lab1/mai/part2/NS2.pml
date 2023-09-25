@@ -85,12 +85,12 @@ active proctype Bob() {
   pkey     = keyA;
   ownNonce = nonceB;
 
-  /* Receive message from other party, pattern-matching on partnerA */
+  /* Receive message from other party */
 
-  network ? msg1 (partnerA, data);
+  network ? msg1 (agentB, data);
 
   /* Check if the data we received follows 1) */
-  (data.key == keyB)
+  (data.key == keyB) && (data.content1 == partnerB);
 
    /* If so, we send a message following 2) */
    messageBA.key = pkey;
@@ -102,6 +102,11 @@ active proctype Bob() {
   /* Now, we wait for Alice to verify and reply */
 
   network ? msg3 (agentB, data);
+
+   /* We proceed only if the key field of the data matches keyB and the
+     received nonce is the one that we have sent earlier; block
+     otherwise.  */
+  (data.key == keyB) && (data.content1 == nonceB);
 
   /* and last - update the auxilary status variable */
   statusB = ok;
