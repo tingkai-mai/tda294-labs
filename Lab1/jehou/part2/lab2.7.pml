@@ -52,7 +52,7 @@ active proctype Alice() {
      received nonce is the one that we have sent earlier; block
      otherwise.  */
 
-  (data.content0 == partnerA) && (data.key == keyA) && (data.content1 == nonceA);
+  (data.key == keyA) && (data.content1 == nonceA);
 
   /* Obtain Bob's nonce */
 
