@@ -1,0 +1,10 @@
+3.3
+Starvation freedom is considered a liveness property. However, as verifying starvation freedom is based on a resource or process (i.e phil) in our particular case, it is dependent on other factors such as the scheduling policy and resource allocation strategy of our system, which Spin is unable to accurately model.
+
+4.1
+With the help of Spin, we are confident that our model in correct in the sense that no deadlocks will occur and that no fork can be held by more than one philosopher at any point of time. However as mentioned before, we are unable to check for starvation freedom due to the lack of knowledge on a scheduling policy. In additon, due to the same fact, we are also unable to ensure that all philosophers have an equal chance of eating, or that they are able to eat infinitely often.
+
+4.2
+Risk 1: Spin is solely reliant on the user's specification of the properties that need to be held by the model. As such, if there were any incorrect properties defined by us, this may lead to our model being an incorrect solution to the dining philosophers problem even though Spin is able to correct verify that the model satisfies the properties.
+
+Risk 2: As Spin is required the exhaustively search for all possible interleavings of the state space, increasing the number of philosophers (i.e N) to a larger number may cause the state space to grow exponentially and result in Spin being unable to explore all states. This may lead to us incorrectly concluding that our solution is correct even if it may not satify the properties in an unexplored state.
