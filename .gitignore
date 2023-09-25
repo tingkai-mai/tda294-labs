@@ -7,3 +7,4 @@
 *.pml.trail
 pan
 *.tmp
+.DS_STORE
