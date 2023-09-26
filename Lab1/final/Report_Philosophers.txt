@@ -9,7 +9,7 @@ In addition, starvation freedom is considered a liveness property. However, as v
 Task 4.1:
 With the help of Spin, we are confident that our solution in correct in the sense that no deadlocks will occur and that no fork can be held by more than one philosopher at any point of time. However as mentioned before, we are unable to check for starvation freedom due to the lack of knowledge on a scheduling policy. In additon, due to the same fact, we are also unable to ensure that all philosophers have an equal chance of eating, or that they are able to eat infinitely often.
 
-We bet $100000000000000 on it.
+Should we be able to further test our solution using a proper and fair scheduling policy, we can then improve our confidence on whether our solution is able to achieve starvation freedom.
 
 Task 4.2:
 Risk 1: Spin is solely reliant on the user's specification of the properties that need to be held by the model. As such, if there were any incorrect properties defined by us, this may lead to our model being an incorrect solution to the dining philosophers problem even though Spin is able to correct verify that the model satisfies the properties.
