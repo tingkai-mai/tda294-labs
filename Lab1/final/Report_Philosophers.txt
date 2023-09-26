@@ -1,10 +1,13 @@
+Task 3.2:
+We formulated a liveness property to verify that each philosopher will eventually be able to eat. However, this property can only be verified if strong fairness is provided. This can be seen from the counter-example that Spin provided which shows a philosopher being starved from picking up the second fork as the statement checking if the fork is available is not continuously executable due to the same fork being repeatedly picked up by the neighbouring philosopher. As such, for our liveness property to hold, we are required to assume strong fairness.
+
 Task 3.3:
 SPIN cannot be used to prove starvation freedom because the philosopher problem may occur infinitely. With each philosopher repeatedly acquiring and releasing forks in an infinite sequence of states with an infinite number of possible infinite interleavings, SPIN cannot analyze all possible interleavings as SPIN can only verify properties in finite state spaces.
 
 In addition, starvation freedom is considered a liveness property. However, as verifying starvation freedom is based on a resource or process (i.e phil) in our particular case, it is dependent on other factors such as the scheduling policy and resource allocation strategy of our system, which Spin is unable to accurately model.
 
 Task 4.1:
-With the help of Spin, we are confident that our model in correct in the sense that no deadlocks will occur and that no fork can be held by more than one philosopher at any point of time. However as mentioned before, we are unable to check for starvation freedom due to the lack of knowledge on a scheduling policy. In additon, due to the same fact, we are also unable to ensure that all philosophers have an equal chance of eating, or that they are able to eat infinitely often.
+With the help of Spin, we are confident that our solution in correct in the sense that no deadlocks will occur and that no fork can be held by more than one philosopher at any point of time. However as mentioned before, we are unable to check for starvation freedom due to the lack of knowledge on a scheduling policy. In additon, due to the same fact, we are also unable to ensure that all philosophers have an equal chance of eating, or that they are able to eat infinitely often.
 
 We bet $100000000000000 on it.
 
