@@ -11,7 +11,7 @@ The intruder intercepts the first message (msg1) that Alice sends to Bob, hence 
 Here we used the safety mode as we are verifying a safety property which is something "good" that is gauranteed throughout each run. Hence, Spin checks if there are any runs that violate this property.
 
 6b.
-(Why is weak fairness not required for "Safety" mode?)
+Using weak fairness in this case does not affect our answer as we are verifying a safety property and hence it is not required.
 
 6c.
 The formulas propAB and propB are both violated in this model.
