@@ -52,7 +52,7 @@ active proctype Alice() {
      received nonce is the one that we have sent earlier; block
      otherwise.  */
 
-  (data.key == keyA) && (data.content1 == nonceA);
+  (data.content0 == partnerA) && (data.key == keyA) && (data.content1 == nonceA);
 
   /* Obtain Bob's nonce */
 
@@ -155,7 +155,7 @@ active proctype Intruder() {
 
        if /* replay intercepted message or assemble it */
 	 :: data.key    = intercepted.key;
-        data.content0  = intercepted.content0;
+      data.content0  = intercepted.content0;
 	    data.content1  = intercepted.content1;
 	    data.content2  = intercepted.content2;
 

@@ -1,20 +1,32 @@
-2a.
+Task 2a:
 We used the acceptance mode to verify the formula as it is a never claim whereby we are checking for something good to happen eventually. Hence, Spin will search for accepting cycles through this claim.
 
-2b.
+Task 2b:
 Using weak fairness does not affect our answer as we are using a rendezvous channel, causing our message passing to be synchronous and ensuring that neither processes will be starved. Therefore, the problem of weak fairness is irrelevant.
 
-3c.
+Task 3a:
+We used acceptance mode to verify the formula as it is the same claim as Task 2a.
+
+Task 3b:
+Using weak fairness will still fail our verification as the issue with the error is not regarding the scheduling.
+
+Task 3c:
 The intruder intercepts the first message (msg1) that Alice sends to Bob, hence Bob will continue to wait for msg1 while Alice waits to receive msg2 from Bob. Thus both Alice and Bob are deadlocked and they never reach status = ok.
 
-6a.
+Task 6a:
 Here we used the safety mode as we are verifying a safety property which is something "good" that is gauranteed throughout each run. Hence, Spin checks if there are any runs that violate this property.
 
-6b.
+Task 6b:
 Using weak fairness in this case does not affect our answer as we are verifying a safety property and hence it is not required.
 
-6c.
+Task 6c:
 The formulas propAB and propB are both violated in this model.
 For propAB, partnerA is made the intruder (agentI). The intruder then intercepts all of the messages from Alice to Bob, acting as a "man in the middle", reading nonceA and nonceB before relaying the message over to Bob. Hence, while Alice and Bob are allows to complete (i.e. status = ok), the nonces of both are known to the intruder.
 
 For propB, partnerA is made the intruder (agentI). Similar to propAB, agentI is able to intercept the messages from Alice to Bob and read nonceB. As partnerB is always set as agentA and Bob is allowed to complete, the safety property is thus violated.
+
+Task 7:
+The effect of the patch was to solve the "man in the middle" attack by the intruder. By adding the identity of principle Y in msg2, and having Alice check that the sender is from its partner, we are able to prevent the intruder from intercepting and relaying Bob's msg2 to Alice as the message will contain Bob's "signature" while Alice was expecting the Intruder's "signature". As such, Alice will not be able to complete should there is a "man in the middle" attack, thus satisfying PropAB and PropB.
+
+Task 8:
+We are confident that our solution is able to guard against a "man in the middle" attack whereby the Intruder merely reads the message and relays it on. However, the protocol is not safe against other forms of attack whereby the Intruder may modify the message that it has read. For example, a simple workaround for the patch in Task 7 would be for the Intruder to change the content0 of the message into its own "signature", thus tricking Alice into believing that there is no "man in the middle".
