@@ -6,7 +6,7 @@ Creates a channel array for the number of forks available
 
 chan forks[N] = [1] of {byte};
 byte forks_counter[N];
-byte eating[N];
+byte eaten[N];
 
 proctype phil(int id) {
   /*
@@ -50,7 +50,7 @@ proctype phil(int id) {
         fi
         
        printf("Philosopher %d is eating with forks %d and %d\n", id, f1, f2);
-       eating[id] = 1;
+       eaten[id] = 1;
        /*
        Reset the variables
        */
@@ -60,7 +60,6 @@ proctype phil(int id) {
        forks_counter[(id + 1) % N]--;
        forks[id] ! id;
        forks[(id + 1) % N] ! (id + 1) % N;
-       eating[id] = 0;
   od
 }
 
@@ -83,7 +82,5 @@ init  {
   od
 }
 
-ltl zero { []<> (eating[0] == 1) }
-ltl one { []<> (eating[1] == 1) }
-ltl two { []<> (eating[2] == 1) }
-ltl three { []<> (eating[3] == 1) }
+ltl allPhilosophersEaten { <> (eaten[0] == 1 && eaten[1] == 1 && 
+    eaten[2] == 1 && eaten[3] == 1) }
