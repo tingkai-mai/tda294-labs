@@ -27,12 +27,20 @@ proctype phil(int id) {
               :: (f1 == N + 1) -> forks[id] ? f1;
               forks_counter[id]++;
             fi
+
+            /*
+            Check that the fork can only be held by at most one philosopher
+            */
             assert(forks_counter[id] <= 1);
           
             if 
               :: (f2 == N + 1) -> forks[(id + 1) % N] ? f2;
               forks_counter[(id + 1) % N]++;
             fi
+
+            /*
+            Check that the fork can only be held by at most one philosopher
+            */
             assert(forks_counter[(id + 1) % N] <= 1);
           
           /*
@@ -89,4 +97,4 @@ init  {
 ltl allPhilosophersEaten { <> (eaten[0] == 1 && eaten[1] == 1 && 
     eaten[2] == 1 && eaten[3] == 1) }
 
-ltl noForkHasMoreThanOneOwner { [] (forks_counter[0] <= 1 && forks_counter[1] <= 1 && forks_counter[2] <= 1 && forks_counter[3] <= 1)}
+ltl noForkHasMoreThanOneOwner { [] (forks_counter[0] <= 1 && forks_counter[1] <= 1 && forks_counter[2] <= 1 && forks_counter[3] <= 1) }
