@@ -1,3 +1,5 @@
+In our solution, we represented the forks as channels to for the philosophers to communicate with as a shared resource. This is to ensure that the philosophers will not directly communicate with one another to check if a fork is available.
+
 Task 2.1:
 We used assertions to check that each fork in the forks_counter will always be less than or equal to 1 to ensure that a single fork cannot be held by more than one philosopher at a time. As this property was satisfied, we did not have to change the model.
 
