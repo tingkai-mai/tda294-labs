@@ -13,7 +13,7 @@ proctype phil(int id) {
   Initialize fork 1 and fork 2
   */
   
-  byte f1 = N + 1;
+  byte f1 = N + 1; // N + 1 represents that the fork is empty.
   byte f2 = N + 1;
   do
     :: printf("Philosopher %d is thinking\n", id);
@@ -27,11 +27,13 @@ proctype phil(int id) {
               :: (f1 == N + 1) -> forks[id] ? f1;
               forks_counter[id]++;
             fi
+            assert(forks_counter[id] <= 1);
           
             if 
               :: (f2 == N + 1) -> forks[(id + 1) % N] ? f2;
               forks_counter[(id + 1) % N]++;
             fi
+            assert(forks_counter[(id + 1) % N] <= 1);
           
           /*
           If id is even, take the right fork first
@@ -42,11 +44,13 @@ proctype phil(int id) {
               :: (f2 == N + 1) -> forks[(id + 1) % N] ? f2;
               forks_counter[(id + 1) % N]++;
             fi
+            assert(forks_counter[(id + 1) % N] <= 1);
           
             if 
               :: (f1 == N + 1) -> forks[id] ? f1;
               forks_counter[id]++;
             fi
+            assert(forks_counter[id] <= 1);
         fi
         
        printf("Philosopher %d is eating with forks %d and %d\n", id, f1, f2);
@@ -84,3 +88,5 @@ init  {
 
 ltl allPhilosophersEaten { <> (eaten[0] == 1 && eaten[1] == 1 && 
     eaten[2] == 1 && eaten[3] == 1) }
+
+ltl noForkHasMoreThanOneOwner { [] (forks_counter[0] <= 1 && forks_counter[1] <= 1 && forks_counter[2] <= 1 && forks_counter[3] <= 1)}
