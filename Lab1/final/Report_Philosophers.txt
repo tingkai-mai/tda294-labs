@@ -4,7 +4,7 @@ Task 2.1:
 We used assertions to check that each fork in the forks_counter will always be less than or equal to 1 to ensure that a single fork cannot be held by more than one philosopher at a time. As this property was satisfied, we did not have to change the model.
 
 Task 2.2:
-We then used an ltl to check that each fork in the forks_counter will always be less than or equal to 1 (i.e { [] forks_counter[i] <= 1 }. This solution is more extensive compared to our assertion-based solution as Spin is able to check if the property is satisfied after every statement, rather than only when it reaches the assert statement. As this property was still satisfied in our model, we did not have to change it.
+We then used an ltl to check that each fork in the forks_counter will always be less than or equal to 1 (i.e { [] forks_counter[i] <= 1 }). This solution is more extensive compared to our assertion-based solution as Spin is able to check if the property is satisfied after every statement, rather than only when it reaches the assert statement. As this property was still satisfied in our model, we did not have to change it.
 
 Task 3.1:
 To verify deadlocks, we simple ran "verify" on the model and checked for the "invalid end state" message. As we initially had possible deadlocks, we modified our model by making every odd-numbered philosopher take their left fork first before the right and every even-numbered philosopher take their right fork before their left. This algorithm ensures that we avoid a deadlock as there will not be a circular chain of dependencies. This is proved by verifying on Spin where we no longer receive the "invalid end state" message.
