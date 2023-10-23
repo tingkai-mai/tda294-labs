@@ -1,0 +1,51 @@
+3.1)
+To verify that the method performBinarySearch meets its specification, we encounter 4 method calls where we have to choose either an inline method or use its method contract. At each of the method call, we decide which option to take based on whether the contract of that particular method is useful in closing the proof.
+
+report("Eliminating duplicates.")
+For this method call, we decided to use the inline method as its contract only ensures that number != null, which is a precondition of our method performBinarySearch. Hence, it does not provide any useful information in closing our proof.
+
+eliminateDuplicates(numbers)
+For this method call, we decided to use its method contract as assuming normal_behaviour, its method contract ensures that for every number that was previously in the numbers array, it will still remain in the array after the removal of duplicate numbers. This is useful information as in performBinarySearch, we begin by requiring that at least one of the elements in the numbers array is equals to our query. With the information from elimiateDuplicates, we can then confirm that that element will still be in the numbers array, which is useful when we are ensuring that numbers[\result] == query. In addition, it also ensures that the array remains sorted with no duplicate array, which will be useful for our search method call later.
+
+report("Searching for " + query)
+Similarly to the first report method call, we decided to use the inline method as its method contract does not provide us with any useful information.
+
+int searchResult = search()
+For this method call, we decided to use its method contract for the normal behaviour whereby there exists an element in the numbers array that matches our query as this is what was required by our performBinarySearch specification. Assuming that the numbers array is sorted with no duplicates (as fulfilled by eliminateDuplicates) and that a number in the numbers array matches our query (which is fulfilled by our precondition from performBinarySearch and ensured by eliminateDuplicates), the method contract then ensures that the result given will be equals to the index in which the query lies in. As a result, the result of search will be returned by our performBinarySearch method, which fulfils the post condition that numbers[\result] == query.
+
+After applying these inline methods/method contracts, we are able to automatically prove that performBinarySearch meets its specification using KeY.
+
+3.2)
+Here, we are required to change the implemention of the eliminateDuplicates method such that its exceptional_behaviour is met. For the exceptional_behaviour specification, we require that the numbers array is not null but that it is empty (i.e its length == 0), and the code is meant to throw a RunTimeException and ensure that size == -1. In the original code, we noticed that only the normal_behaviour was implemented as there was no checking of whether the numbers array was empty. Hence, we added an if statement checking if (numbers != null and numbers.length == 0), which were the requirements of our exceptional_behaviour. Should these conditions be met, we then set size = -1 explicitly to ensure that the post condition is met, and throw a RuntimeException as specified. After changing the implementation, we then proved the specification using KeY.
+
+3.3a)
+As we are proving that drawMultiple() preserves the invariants, all we have to do is ensure that the method calls drawVertical(0) and drawHorizontal(0) preserves the invariants. Do to so, we simply use the method contract on both of these method calls and prove using KeY that they preserve the invariants.
+
+3.3b)
+Here we are proving that drawVertical() preserves the class invariants. To do so, we have to ensure that loop invariant holds. However, before proving this, we first notice that there is a minor mistake in the loop invariant. Upon applying the rules automatically and inspecting the branches in KeY, followed by looking at the loop invariant given, we notice that the variable i is set to be >= 0 and < canvas[depth].length. This loop invariant thus does not hold after the last loop as i will be increased to become equal to canvas[depth].length before the loop is stopped. Hence, we changed the invariant for i to be >= 0 and <= canvas[depth].length to ensure that it holds even after the final loop. From here, we then simply applied the loop invariant in KeY and used it to automatically prove that the method preserves the class invariants.
+
+4)
+For problem 4, we were tasked to provide an implementation for the methods in the class NumericTextBox to satisfy the JML specifications that we wrote in problem 2, as well as verify that it holds true using KeY. We will go through each method implementation below.
+
+getRenderer()
+As this method is relatively simple in that its purpose is to return the textBoxRenderer in the class, we are only required to ensure that \result == textBoxRenderer and set the return value is nullable. For the implementation, we merely return textBoxRender. The proof of this specification is named "NumericTextBox(NumericTextBox__getRenderer()).JML normal_behavior operation contract.0.proof".
+
+setRenderer()
+This method is also relatively simple as its purpose is to set a new textBoxRenderer to the one that is given as a parameter. As the textBoxRenderer can be null, we set the parameter to nullable and ensure that the method gives us textBoxRenderer == renderer, meaning that then new textBoxRenderer is the one in the parameter. We also set textBoxRenderer to assignable as we are replacing it. For the implementation, we simply set textBoxRenderer = renderer. The proof of this specification is named "NumericTextBox(NumericTextBox__setRenderer(TextBoxRenderer)).JML normal_behavior operation contract.0.proof".
+
+isSingleDigit()
+This method helps us check if the given input is a single digit. As such, we ensure that the boolean result is equal to the check of whether the input is a single digit (i.e 0 <= input & input <= 9). For the implementation, we implement something very similar using a conditional of if the input is between 0 and 9, we return true, otherwise we return false. The proof of this specification is named "NumericTextBox(NumericTextBox__isSingleDigit(int)).JML normal_behavior operation contract.0.proof".
+
+clear()
+This method clears the entire content array (i.e all elements == EMPTY), brings the cursorPosition back to 0 and set the textBoxRenderer.contentChanged if textBoxRenderer is not null. As such, we ensure that these 3 conditions are met in the post conditions and set textBoxRenderer.contentChanged, cursorPosition and content[*] as assignable. To implement this method, we use a while loop. In each cycle of the loop, we set the content[cursorPosition - 1] to EMPTY and reduce cursorPosition by 1, until cursorPosition is equals to 0. As such, we set a loop invariant such that cursorPosition is between 0 and content.length, that all the elements in content with index >= cursorPosition is EMPTY and that all elements in content with index < cursorPosition is a single digit (not EMPTY). In addition, we set cursorPosition and content[*] to be assignable. After the loop breaks, we then check if textBoxRenderer is null and if it is not, we set the contentChanged attribute of it to true. The proof of this specification is named "NumericTextBox(NumericTextBox__clear()).JML normal_behavior operation contract.0.proof".
+
+enterCharacter()
+This method has 3 different behaviours depending on the current state of the instance, as well as the input given. We begin by specifying the exceptional_behaviours, which is when either an invalid input is given (!isSingleDigit(input)) or the content array is full (cursorPosition == content.length). In the former case, we are meant to throw an IllegalArgumentException and in the latter, we throw a RuntimeException. In both of these cases, if the textBoxRenderer is not null, we set its showError attribute to true. Hence, we implement these behaviours through conditional statements of "if !isSingleDigit(input)" and "else if (cursorPosition == content.length)". The proof of this specification is named "NumericTextBox(NumericTextBox__enterCharacter(int)).JML exceptional_behavior operation contract.0.proof".
+
+If neither of the requirements for these exceptions are met, we then can guarantee a normal_behaviour that ensures that the input is added to content[cursorPostion], the cursorPosition is increased by 1 and if the textBoxRenderer is not null, its contentChanged attribute is set to true. As such, we implement the code to follow this specificiation. The proof of this specification is named "NumericTextBox(NumericTextBox__enterCharacter(int)).JML normal_behavior operation contract.0.proof".
+
+backspace()
+This method, similar to enterCharacter(), also has both an exceptional_behaviour when the entire content array is empty and a normal_behaviour. For the exceptional_behaviour, we can know when the content array is empty when cursorPosition == 0. When faced with such a case, we then set the showError attribute to true if textBoxRenderer is not null and throw a RuntimeException. This is implemented using an if statement of "if (cursorPosition == 0)". The proof of this specification is named "NumericTextBox(NumericTextBox__backspace()).JML exceptional_behavior operation contract.0.proof".
+
+If cursorPosition != 0, we can then be sure that the normal_behaviour will occur. This behaviour ensures that the last non-empty character of the content array is removed, the cursorPosition is reduced by 1 and if textBoxRenderer is not null, its showError attribute is set to true. We then implemented the code to follow these post conditions. The proof of this specification is named "NumericTextBox(NumericTextBox__backspace()).JML normal_behavior operation contract.0.proof".
+
